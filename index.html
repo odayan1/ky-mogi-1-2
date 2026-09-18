@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KY模擬 数学 大問1・2 | KATEぷら</title>
+<script>
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)'], ['$','$']] },
+    svg: { fontCache: 'global' }
+  };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+<style>
+  :root{
+    --blue:#2fbdea; --blue-d:#1aa3d0; --green:#8dc63f; --green-d:#5e9022; --yellow:#f7d000;
+    --ink:#2b3a45; --muted:#6b7c88; --bg:#f4fbfe; --card:#ffffff;
+    --line:#e4eef4; --good:#38b26b; --bad:#e8624a;
+    --shadow:0 6px 22px rgba(28,120,160,.10);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,system-ui,sans-serif;
+       color:var(--ink);background:linear-gradient(180deg,#eaf7fd 0%,var(--bg) 260px);
+       -webkit-font-smoothing:antialiased;padding-bottom:80px;}
+  /* Header */
+  header{background:var(--card);border-bottom:3px solid var(--blue);box-shadow:0 2px 12px rgba(28,120,160,.08);position:sticky;top:0;z-index:50;}
+  .head-inner{max-width:840px;margin:0 auto;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  .title-wrap h1{margin:0;font-size:1.3rem;letter-spacing:.5px;}
+  .title-wrap .sub{color:var(--muted);font-size:.78rem;margin-top:2px;}
+  .brand{display:flex;align-items:center;gap:12px;}
+  .brand img{height:88px;width:auto;display:block;}
+  .brand .tag{font-size:.9rem;font-weight:800;color:var(--green);text-align:right;line-height:1.35;}
+  .brand .tag small{display:block;font-size:.66rem;font-weight:600;color:var(--muted);margin-top:2px;}
+  main{max-width:840px;margin:0 auto;padding:0 20px 40px;}
+  /* Control card */
+  .ctrl{background:var(--card);border-radius:16px;padding:16px 18px;margin:18px 0 6px;box-shadow:var(--shadow);border:1px solid var(--line);}
+  .pinfo{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);font-weight:700;margin-bottom:6px;}
+  .bar{height:10px;background:#e9f3f8;border-radius:8px;overflow:hidden;border:1px solid var(--line);}
+  .bar>i{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:8px;transition:width .3s;}
+  .reroll{margin-top:12px;width:100%;padding:12px;border:0;border-radius:26px;background:var(--yellow);color:#6b5900;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:var(--shadow);}
+  .reroll:hover{filter:brightness(.97);}
+  .note{font-size:.76rem;color:var(--muted);line-height:1.7;margin-top:12px;background:#fffdf0;border:1px dashed var(--yellow);border-radius:10px;padding:10px 12px;}
+  .clear{background:linear-gradient(90deg,#eafaf0,#eaf7fd);border:2px solid var(--green);border-radius:16px;padding:16px;text-align:center;margin:14px 0;box-shadow:var(--shadow);}
+  /* Tabs */
+  .tabs{display:flex;gap:10px;margin:16px 0 0;}
+  .tab{flex:1;padding:12px 8px;border:none;border-radius:14px 14px 0 0;cursor:pointer;font-size:1rem;font-weight:800;background:#dceef6;color:var(--muted);border-bottom:4px solid transparent;transition:.15s;font-family:inherit;}
+  .tab.active{background:var(--card);color:var(--blue-d);border-bottom-color:var(--blue);box-shadow:var(--shadow);}
+  .panel{display:none;animation:fade .25s ease;}
+  .panel.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  /* Problem card */
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden;margin:14px 0;}
+  .card.done{border-color:var(--green);}
+  .chead{width:100%;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;text-align:left;background:none;border:0;cursor:pointer;font:inherit;color:inherit;}
+  .num{flex:0 0 auto;width:34px;height:34px;border-radius:999px;background:var(--blue);color:#fff;font-weight:800;font-size:.85rem;display:flex;align-items:center;justify-content:center;}
+  .card.done .num{background:var(--green);}
+  .q{flex:1;line-height:1.95;padding-top:3px;font-size:1rem;}
+  .caret{color:var(--muted);margin-top:4px;}
+  .cbody{padding:0 18px 18px;}
+  .figbox{background:#f7fcff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:14px;text-align:center;}
+  .figbox p{font-size:.72rem;color:var(--muted);font-weight:700;margin:0 0 6px;}
+  .lead{font-size:.9rem;font-weight:700;color:var(--blue-d);margin:0 0 10px;}
+  .choices{display:grid;grid-template-columns:1fr;gap:10px;}
+  @media(min-width:520px){.choices{grid-template-columns:1fr 1fr;}}
+  .choice{display:flex;align-items:center;gap:10px;padding:13px 12px;border:2px solid var(--line);border-radius:14px;background:#fff;font-size:1.05rem;cursor:pointer;font-family:inherit;text-align:left;transition:.12s;}
+  .choice:hover{border-color:var(--blue);background:#f2fbfe;}
+  .choice .lb{width:26px;height:26px;border-radius:999px;background:#eaf7fd;color:var(--blue-d);font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+  .choice.ok{border-color:var(--good);background:#eafaf0;}
+  .choice.ng{border-color:var(--bad);background:#fdeeea;}
+  .choice.dim{border-color:var(--line);background:#fafdff;opacity:.6;}
+  .choice[disabled]{cursor:default;}
+  .mark{margin-left:auto;font-weight:800;}
+  .mark.g{color:var(--good);}.mark.r{color:var(--bad);}
+  .verdict{margin-top:10px;font-size:.9rem;font-weight:800;}
+  .verdict.g{color:var(--good);}.verdict.r{color:var(--bad);}
+  .steps{background:#fffdf0;border:1px dashed var(--yellow);border-radius:12px;padding:14px;margin-top:14px;}
+  .steps>.t{display:flex;align-items:center;gap:6px;font-size:.88rem;font-weight:800;color:#8a7400;margin:0 0 10px;}
+  .step{display:flex;gap:10px;font-size:.92rem;background:#fff;border-radius:10px;padding:10px;line-height:1.9;margin-bottom:8px;border:1px solid var(--line);}
+  .step .n{flex:0 0 auto;width:22px;height:22px;border-radius:999px;background:var(--yellow);color:#6b5900;font-size:.8rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:2px;}
+  .btn{width:100%;padding:11px;border:0;border-radius:22px;background:var(--blue);color:#fff;font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit;box-shadow:var(--shadow);}
+  .btn:hover{background:var(--blue-d);}
+  .ansbox{margin-top:10px;display:flex;align-items:center;gap:10px;background:#eafaf0;border:2px solid var(--good);border-radius:12px;padding:13px;}
+  .ansbox b{font-size:1.1rem;}
+  .donebtn{width:100%;margin-top:14px;padding:13px;border:0;border-radius:26px;background:var(--green);color:#fff;font-weight:800;font-size:1rem;cursor:pointer;font-family:inherit;box-shadow:var(--shadow);}
+  .donebtn:hover{background:var(--green-d);}
+  .footer-note{text-align:center;color:var(--muted);font-size:.76rem;margin:26px 0 0;}
+  .fixed{position:fixed;bottom:16px;right:16px;background:var(--blue);color:#fff;font-weight:800;padding:8px 16px;border-radius:999px;box-shadow:var(--shadow);font-size:.82rem;z-index:20;}
+  /* math */
+  .math{font-family:Georgia,"Times New Roman",serif;white-space:nowrap;}
+  .frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 2px;font-size:.85em;}
+  .frac .fn{padding:0 4px;border-bottom:1.5px solid currentColor;line-height:1.15;}
+  .frac .fd{padding:0 4px;line-height:1.15;}
+  .sqrt{display:inline-flex;align-items:stretch;}
+  .sqrt .rad{border-top:1.5px solid currentColor;padding:0 2px;}
+  .math em{font-style:italic;}
+  sup{font-size:.7em;}
+  /* interactive */
+  .dia{background:#f7fcff;border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:14px;}
+  .wtitle{font-size:.9rem;font-weight:800;color:var(--blue-d);margin:0 0 10px;}
+  .srow{display:flex;flex-direction:column;gap:10px;align-items:center;}
+  @media(min-width:520px){.srow{flex-direction:row;}}
+  .ssvg{flex:0 0 auto;}
+  .sctrl{width:100%;}
+  .slider{width:100%;accent-color:var(--blue);margin:6px 0;}
+  .sinfo{font-size:.9rem;margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;line-height:2.1;}
+  .hit{color:var(--good);font-weight:800;}
+  .setbtn{margin-top:8px;font-size:.8rem;background:var(--blue);color:#fff;border:0;padding:7px 16px;border-radius:999px;cursor:pointer;}
+  .nav{display:flex;gap:8px;margin-top:10px;}
+  .nav button{flex:1;padding:9px;border:0;border-radius:22px;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;}
+  .nav .prev{background:#e2eef5;color:var(--muted);}
+  .nav .next{background:var(--blue);color:#fff;}
+  .nav button:disabled{opacity:.4;cursor:default;}
+  .atext{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;font-size:.9rem;min-height:46px;line-height:1.9;margin-top:10px;}
+  .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(min-width:520px){.pgrid{grid-template-columns:1fr 1fr 1fr;}}
+  .pcell{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;border:2px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font-weight:700;}
+  .pcell.sel{border-color:var(--blue);background:#eaf7fd;}
+  .pcell.pg{border-color:var(--good);background:#eafaf0;}
+  .pcell.pr{border-color:var(--bad);background:#fdeeea;}
+  .ball{width:34px;height:34px;border-radius:999px;font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid;}
+  .ball.red{background:#ef4444;color:#fff;border-color:#b91c1c;}
+  .ball.white{background:#fff;color:#374151;border-color:#9ca3af;}
+  .presult{margin-top:12px;border-radius:12px;padding:13px;font-size:.9rem;line-height:2;}
+  .presult.g{background:#eafaf0;border:1px solid var(--good);}
+  .presult.y{background:#fffdf0;border:1px solid var(--yellow);}
+  .again{margin-top:8px;font-size:.8rem;background:#fff;border:1px solid var(--line);padding:6px 16px;border-radius:999px;cursor:pointer;}
+  @media(max-width:520px){.brand .tag{display:none;} .title-wrap h1{font-size:1.05rem;} .brand img{height:64px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="head-inner">
+    <div class="title-wrap">
+      <h1>📐 KY模擬 数学 大問1・2</h1>
+      <div class="sub">数字入れかえ式・自動生成オリジナル問題で計算＆小問を特訓</div>
+    </div>
+    <div class="brand">
+      <div class="tag">つまずきを、プラスに。<small>KATEぷら</small></div>
+      <img src="logo.png" alt="KATEぷら" />
+    </div>
+  </div>
+</header>
+<main>
+  <div class="ctrl">
+    <div class="pinfo"><span>このセットの進捗</span><span id="pinfo">0 / 14 問（0%）　累計 0 問</span></div>
+    <div class="bar"><i id="pbar" style="width:0%"></i></div>
+    <button class="reroll" id="reroll">🔄 数字を変えて新しい問題に挑戦</button>
+    <div class="note">※本アプリの問題は、過去問の<b>出題形式を参考に数値を入れかえて自動生成したオリジナル問題</b>です。特定の検定・試験の主催団体とは一切関係ありません。過去問そのものの複製・配布ではありません。</div>
+  </div>
+  <div id="clear"></div>
+  <div class="tabs">
+    <button class="tab active" data-tab="s1">📗 大問1（計算）</button>
+    <button class="tab" data-tab="s2">📘 大問2（小問）</button>
+  </div>
+  <section class="panel active" id="panel-s1"><div id="s1"></div></section>
+  <section class="panel" id="panel-s2"><div id="s2"></div></section>
+  <p class="footer-note">KY模擬 数学 大問1・2 練習 ｜ 提供：KATEぷら「つまずきを、プラスに。」</p>
+</main>
+<div class="fixed">KATEぷら</div>
+
+<script>
+/* ===== 数式（LaTeX / MathJax） ===== */
+function tex(s){
+  s=s.replace(/×/g,'\\times ').replace(/÷/g,'\\div ').replace(/−/g,'-')
+     .replace(/∠/g,'\\angle ').replace(/π/g,'\\pi ').replace(/ℓ/g,'\\ell ')
+     .replace(/∥/g,'\\parallel ').replace(/°/g,'^{\\circ}');
+  s=s.replace(/cm/g,'\\,\\text{cm}');
+  s=s.replace(/[぀-ヿ㐀-鿿]+/g,function(m){return '\\text{'+m+'}';});
+  return s;
+}
+function M(s){return '\\('+tex(s)+'\\)';}
+function typeset(el){if(window.MathJax&&MathJax.typesetPromise){try{MathJax.typesetPromise(el?[el]:undefined);}catch(e){}}}
+
+/* ===== 乱数 ===== */
+function rand(a,b){return a+Math.floor(Math.random()*(b-a+1));}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function fmt(n){return String(n).replace(/-/g,'−');}
+function rnd(x,d){d=d||3;var p=Math.pow(10,d);return Math.round(x*p)/p;}
+function mc(correct,dis){var u=[correct];for(var k=0;k<dis.length;k++){if(u.indexOf(dis[k])<0)u.push(dis[k]);}var n=0;while(u.length<4){u.push(correct+' '.repeat(++n));}var sh=shuffle(u.slice(0,4));return {choices:sh,correct:sh.indexOf(correct)};}
+
+/* ===== 図(SVG文字列) ===== */
+function sectorSVG(r,angle,live,target){
+  var cx=110,cy=105,R=80,rad=angle*Math.PI/180;
+  var ex=cx+R*Math.cos(rad),ey=cy-R*Math.sin(rad),large=angle>180?1:0;
+  var ax=cx+22*Math.cos(rad),ay=cy-22*Math.sin(rad);
+  var fill=(live&&angle===target)?'#cdeffb':'#eaf7fd',stroke=live?'#1aa3d0':'#2fbdea';
+  var s='<svg viewBox="0 0 220 210" width="180" height="172">';
+  if(live)s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+R+'" fill="none" stroke="#d7e9f2" stroke-width="1" stroke-dasharray="4 4"/>';
+  s+='<path d="M '+cx+' '+cy+' L '+(cx+R)+' '+cy+' A '+R+' '+R+' 0 '+large+' 0 '+ex+' '+ey+' Z" fill="'+fill+'" stroke="'+stroke+'" stroke-width="2"/>';
+  s+='<text x="'+(cx+26)+'" y="'+(cy-8)+'" font-size="12">'+r+'cm</text>';
+  s+='<path d="M '+(cx+22)+' '+cy+' A 22 22 0 '+large+' 0 '+ax+' '+ay+'" fill="none" stroke="#e8624a" stroke-width="1.5"/>';
+  s+='<text x="'+(cx-46)+'" y="'+(cy+34)+'" font-size="13" fill="#e8624a" font-weight="bold">'+angle+'°</text>';
+  return s+'</svg>';
+}
+function angleSVG(a,b,stage){
+  var sum=a+b,x=(180-sum)/2;
+  var s='<svg viewBox="0 0 340 240" width="100%" style="max-width:320px">';
+  s+='<line x1="20" y1="40" x2="320" y2="40" stroke="#2b3a45" stroke-width="1.5"/>';
+  s+='<line x1="20" y1="200" x2="320" y2="200" stroke="#2b3a45" stroke-width="1.5"/>';
+  s+='<text x="8" y="45" font-size="14" font-style="italic">ℓ</text>';
+  s+='<text x="8" y="205" font-size="14" font-style="italic">m</text>';
+  s+='<polygon points="260,40 280,200 45,120" fill="none" stroke="'+(stage!=null?'#1aa3d0':'#2b3a45')+'" stroke-width="2"/>';
+  s+='<text x="258" y="30" font-size="14" font-weight="bold">B</text>';
+  s+='<text x="286" y="214" font-size="14" font-weight="bold">C</text>';
+  s+='<text x="30" y="118" font-size="14" font-weight="bold">A</text>';
+  s+='<path d="M 225 40 A 35 35 0 0 0 227 52" fill="none" stroke="#e8624a" stroke-width="1.5"/>';
+  s+='<text x="184" y="60" font-size="13" fill="#e8624a" font-weight="bold">'+a+'°</text>';
+  s+='<path d="M 240 200 A 40 40 0 0 1 242 187" fill="none" stroke="#e8624a" stroke-width="1.5"/>';
+  s+='<text x="192" y="193" font-size="13" fill="#e8624a" font-weight="bold">'+b+'°</text>';
+  if(stage==null){
+    s+='<path d="M 263 64 A 24 24 0 0 1 237 48" fill="none" stroke="#e8624a" stroke-width="1.5"/>';
+    s+='<text x="233" y="82" font-size="15" fill="#e8624a" font-weight="bold" font-style="italic">x</text>';
+  }else{
+    if(stage>=1)s+='<line x1="20" y1="120" x2="320" y2="120" stroke="#8dc63f" stroke-width="2" stroke-dasharray="6 4"/>';
+    if(stage>=2){s+='<text x="80" y="112" font-size="11" fill="#5e9022" font-weight="bold">'+a+'°(錯角)</text>';s+='<text x="80" y="136" font-size="11" fill="#5e9022" font-weight="bold">'+b+'°(錯角)</text>';s+='<text x="126" y="100" font-size="12" fill="#e8624a" font-weight="bold">∠BAC = '+sum+'°</text>';}
+    if(stage>=3){s+='<path d="M 263 64 A 24 24 0 0 1 237 48" fill="none" stroke="#1aa3d0" stroke-width="1.5"/>';s+='<text x="228" y="82" font-size="12" fill="#1aa3d0" font-weight="bold">'+x+'°</text>';s+='<text x="236" y="178" font-size="13" fill="#1aa3d0" font-weight="bold">x = '+x+'°</text>';}
+  }
+  return s+'</svg>';
+}
+function bagSVG(){
+  return '<svg viewBox="0 0 220 170" width="160" height="124">'+
+  '<path d="M 70 30 Q 60 10 85 15 L 135 15 Q 160 10 150 30 Q 190 60 185 110 Q 182 155 110 158 Q 38 155 35 110 Q 30 60 70 30 Z" fill="#fffdf0" stroke="#8a7400" stroke-width="2"/>'+
+  '<path d="M 70 30 Q 110 42 150 30" fill="none" stroke="#8a7400" stroke-width="2"/>'+
+  '<circle cx="80" cy="80" r="20" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/><text x="80" y="85" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">赤①</text>'+
+  '<circle cx="135" cy="75" r="20" fill="#ef4444" stroke="#b91c1c" stroke-width="2"/><text x="135" y="80" font-size="11" fill="#fff" text-anchor="middle" font-weight="bold">赤②</text>'+
+  '<circle cx="90" cy="125" r="20" fill="#fff" stroke="#6b7280" stroke-width="2"/><text x="90" y="130" font-size="11" fill="#374151" text-anchor="middle" font-weight="bold">白①</text>'+
+  '<circle cx="140" cy="120" r="20" fill="#fff" stroke="#6b7280" stroke-width="2"/><text x="140" y="125" font-size="11" fill="#374151" text-anchor="middle" font-weight="bold">白②</text></svg>';
+}
+function quadSVG(step){
+  var s='<svg viewBox="0 0 350 280" width="100%" style="max-width:320px">';
+  s+='<polygon points="120,40 280,120 310,250 40,250" fill="#eaf7fd" stroke="#2b3a45" stroke-width="2"/>';
+  s+='<text x="110" y="32" font-size="14" font-weight="bold">A</text><text x="286" y="115" font-size="14" font-weight="bold">D</text>';
+  s+='<text x="316" y="260" font-size="14" font-weight="bold">C</text><text x="22" y="260" font-size="14" font-weight="bold">B</text>';
+  if(step==null){
+    s+='<path d="M 70 160 Q 110 190 130 235" fill="none" stroke="#e8624a" stroke-width="1.5" stroke-dasharray="5 4"/>';
+    s+='<text x="42" y="150" font-size="11" fill="#e8624a">辺ABを辺BCに</text><text x="42" y="164" font-size="11" fill="#e8624a">重ねるように折る</text>';
+  }else{
+    if(step>=1){s+='<path d="M 109.3 259.7 A 70 70 0 0 0 54.6 181.5" fill="none" stroke="#e8624a" stroke-width="1.5"/><circle cx="110" cy="250" r="4" fill="#e8624a"/><circle cx="64.9" cy="184.6" r="4" fill="#e8624a"/>';}
+    if(step>=2){s+='<path d="M 143.6 200.3 A 60 60 0 0 0 103.7 190.3" fill="none" stroke="#f7b500" stroke-width="1.5"/><path d="M 118.4 211.8 A 60 60 0 0 0 123.4 171.1" fill="none" stroke="#f7b500" stroke-width="1.5"/><text x="124.5" y="197.5" font-size="16" fill="#f7b500" text-anchor="middle" font-weight="bold">★</text>';}
+    if(step>=3){s+='<line x1="40" y1="250" x2="280" y2="84" stroke="#e8624a" stroke-width="2" stroke-dasharray="7 4"/>';}
+    if(step>=4){s+='<circle cx="250" cy="105" r="6" fill="#e8624a"/><text x="243" y="93" font-size="15" font-weight="bold" fill="#e8624a">P</text>';}
+  }
+  return s+'</svg>';
+}
+function figureHTML(p){
+  var svg='';
+  if(p.figure==='sector')svg=sectorSVG(p.fp.r,p.fp.theta,false,0);
+  else if(p.figure==='angle')svg=angleSVG(p.fp.a,p.fp.b,null);
+  else if(p.figure==='bag')svg=bagSVG();
+  else if(p.figure==='quad')svg=quadSVG(null);
+  else return '';
+  return '<div class="figbox"><p>【問題の図】</p>'+svg+'</div>';
+}
+
+/* ===== 問題ジェネレータ ===== */
+function gen11(){var a=rand(2,9),b=rand(a+3,a+12),r=a-b;var m=mc(fmt(r),[fmt(b-a),fmt(-(a+b)),fmt(a+b)]);
+  return {id:'1-1',section:1,q:M(a+' − '+b)+' を計算しなさい。',choices:m.choices,correct:m.correct,
+  steps:['数直線で考えよう。'+a+' から左へ '+b+' 進む。','小さい数 − 大きい数 → 答えはマイナス。大きさは '+M(b+' − '+a+' = '+(b-a))+'。','よって答えは '+M(fmt(r))+'！'],answer:M(fmt(r))};}
+function gen12(){var d=rand(2,8),n=pick([3,4,6,7,8,9]);while((d*n)%10===0){d=rand(2,8);n=pick([3,4,6,7,8,9]);}var dd=-(d*n)/10,res=-d/10;var m=mc(fmt(res),[fmt(d/10),fmt(-d),fmt(-d/100)]);
+  return {id:'1-2',section:1,q:M(fmt(dd)+' ÷ '+n)+' を計算しなさい。',choices:m.choices,correct:m.correct,
+  steps:['符号を先に決める：(−) ÷ (+) = (−)。','数の部分：'+M((d*n/10)+' ÷ '+n+' = '+(d/10))+'。','よって答えは '+M(fmt(res))+'！'],answer:M(fmt(res))};}
+function gen13(){var a=rand(2,4),b=rand(3,5),res=a*a*a+b*b;var m=mc(String(res),[String(a*a*a-b*b),String(a*a+b*b),String(a*a*a+2*b)]);
+  return {id:'1-3',section:1,q:M(a+'^{3} + (−'+b+')^{2}')+' を計算しなさい。',choices:m.choices,correct:m.correct,
+  steps:['累乗を先に計算。'+M(a+'^{3} = '+(a*a*a))+'。',M('(−'+b+')^{2} = +'+(b*b))+'。⚠️ '+M('(−'+b+')^{2}')+' と '+M('−'+b+'^{2}')+' はちがう！',M((a*a*a)+' + '+(b*b)+' = '+res)+'！'],answer:M(String(res))};}
+function gen14(){var k=rand(2,9),d=rand(2,5),q=pick([2,3,5,7]);while(q===d)q=pick([2,3,5,7]);var mm=d*q;var m=mc(k+'\\sqrt{'+q+'}',[k+'\\sqrt{'+mm+'}',(k*d)+'\\sqrt{'+q+'}',k+'\\sqrt{'+d+'}']);
+  return {id:'1-4',section:1,q:M(k+'\\sqrt{'+mm+'} ÷ \\sqrt{'+d+'}')+' を計算しなさい。',choices:m.choices,correct:m.correct,
+  steps:['根号の中どうしで割り算：'+M('\\sqrt{'+mm+'} ÷ \\sqrt{'+d+'} = \\sqrt{'+mm+' ÷ '+d+'}')+'。',M('\\sqrt{'+mm+' ÷ '+d+'} = \\sqrt{'+q+'}')+'。係数の '+k+' はそのまま。','よって答えは '+M(k+'\\sqrt{'+q+'}')+'！'],answer:M(k+'\\sqrt{'+q+'}')};}
+function gen15(){var c3=pick([2,3,4]),k=rand(2,6),c2=pick([2,3]),c1=(k*c3)/c2;while(!Number.isInteger(c1)||c1>9||c1<2){c2=pick([2,3]);c1=(k*c3)/c2;}var m=mc('−'+k+'a^{2}',[k+'a^{2}','−'+k+'a^{2}b','−'+k+'a']);
+  return {id:'1-5',section:1,q:M(c1+'a^{2}b × (−'+c2+'ab) ÷ '+c3+'ab^{2}')+' を計算しなさい。',choices:m.choices,correct:m.correct,
+  steps:['符号を先に決める：マイナス 1 個 → 答えはマイナス。','分数にまとめる：'+M('\\frac{'+c1+'a^{2}b × '+c2+'ab}{'+c3+'ab^{2}} = \\frac{'+(c1*c2)+'a^{3}b^{2}}{'+c3+'ab^{2}}')+'。','係数 '+M((c1*c2)+' ÷ '+c3+' = '+k)+'、文字 '+M('a^{3}b^{2} ÷ ab^{2} = a^{2}')+'。','よって答えは '+M('−'+k+'a^{2}')+'！'],answer:M('−'+k+'a^{2}')};}
+function gen16(){var m0=rand(3,7),n=rand(2,6);while(n===m0)n=rand(2,6);var s=m0+n,p=m0*n;var m=mc('x^{2} + '+p,['x^{2} + '+s+'x + '+p,'x^{2} − '+p,'2x^{2} + '+p]);
+  return {id:'1-6',section:1,q:M('(x + '+m0+')(x + '+n+') − '+s+'x')+' を計算しなさい。',choices:m.choices,correct:m.correct,
+  steps:['展開公式：'+M('(x + a)(x + b) = x^{2} + (a + b)x + ab')+'。',M('(x + '+m0+')(x + '+n+') = x^{2} + '+s+'x + '+p)+'。',M('+'+s+'x')+' と '+M('−'+s+'x')+' が消える！','よって答えは '+M('x^{2} + '+p)+'！'],answer:M('x^{2} + '+p)};}
+function gen21(){var mags=shuffle([2,3,4,5,6,7,8,9]).slice(0,3);var mx=Math.max.apply(null,mags)+rand(1,2);var all=shuffle(mags.concat([mx]));
+  var v=all.map(function(mg){return mg===mx?-mg:(rand(0,1)?mg:-mg);});
+  var ci=0;for(var i=1;i<4;i++){if(Math.abs(v[i])>Math.abs(v[ci]))ci=i;}
+  function sg(n){return n>0?('+'+n):fmt(n);}var L=['ア','イ','ウ','エ'];
+  return {id:'2-1',section:2,fixed:true,q:'絶対値がもっとも大きい数はどれ？　ア '+M(sg(v[0]))+'　イ '+M(sg(v[1]))+'　ウ '+M(sg(v[2]))+'　エ '+M(sg(v[3])),
+  choices:L,correct:ci,steps:['絶対値 = 0 からの距離。符号を取って比べる！','ア:'+Math.abs(v[0])+'　イ:'+Math.abs(v[1])+'　ウ:'+Math.abs(v[2])+'　エ:'+Math.abs(v[3])+'。','いちばん大きいのは '+Math.abs(v[ci])+'。答えは'+L[ci]+'。'],answer:L[ci]+'（'+M(sg(v[ci]))+'）'};}
+function gen22(){var x0=rand(-3,3);while(x0===0)x0=rand(-3,3);var y0=rand(-3,3);while(y0===0||y0===x0)y0=rand(-3,3);
+  var a1=rand(1,4),a2=2*a1,b1=rand(2,7),b2=rand(2,7);while(b2===2*b1||b2===b1)b2=rand(2,7);
+  var c1=a1*x0+b1*y0,c2=a2*x0+b2*y0,co=2*b1-b2,cc=2*c1-c2;
+  var cor='x = '+fmt(x0)+', y = '+fmt(y0);
+  var m=mc(cor,['x = '+fmt(y0)+', y = '+fmt(x0),'x = '+fmt(-x0)+', y = '+fmt(-y0),'x = '+fmt(x0)+', y = '+fmt(-y0)]);
+  var q='連立方程式 <span style="display:inline-flex;align-items:center;margin:0 6px;vertical-align:middle"><span style="font-size:30px;color:#9ca3af;font-weight:100">{</span><span style="display:inline-flex;flex-direction:column;margin-left:4px;font-size:.95rem;line-height:1.6">'+M(a1+'x + '+b1+'y = '+fmt(c1))+M(a2+'x + '+b2+'y = '+fmt(c2))+'</span></span> を解きなさい。';
+  return {id:'2-2',section:2,q:q,choices:m.choices,correct:m.correct,
+  steps:['加減法で '+M('x')+' を消す。上の式を 2 倍：'+M(a2+'x + '+(2*b1)+'y = '+fmt(2*c1))+'。','2式を引く：'+M(co+'y = '+fmt(cc))+' → '+M('y = '+fmt(y0))+'。','上の式に代入：'+M(a1+'x + '+b1+' × ('+fmt(y0)+') = '+fmt(c1))+' → '+M('x = '+fmt(x0))+'。','答えは '+M('x = '+fmt(x0)+', y = '+fmt(y0))+'！'],answer:M('x = '+fmt(x0)+', y = '+fmt(y0))};}
+function gen23(){var p=pick([2,3,5,7]),q=pick([1,2,3]);var qc=q===1?'':String(q);var cor='('+p+'a + '+qc+'b)('+p+'a − '+qc+'b)';
+  var m=mc(cor,['('+p+'a − '+qc+'b)^{2}','('+(p*p)+'a + '+qc+'b)(a − '+qc+'b)',p+'(a + '+qc+'b)(a − '+qc+'b)']);
+  return {id:'2-3',section:2,q:M((p*p)+'a^{2} − '+(q*q)+'b^{2}')+' を因数分解しなさい。',choices:m.choices,correct:m.correct,
+  steps:['「2乗 − 2乗」の形！公式 '+M('x^{2} − y^{2} = (x + y)(x − y)')+'。',M((p*p)+'a^{2} = ('+p+'a)^{2}')+'、'+M((q*q)+'b^{2} = ('+qc+'b)^{2}')+'。','よって '+M(cor)+'！'],answer:M(cor)};}
+function gen24(){var tb={2:1.414,3:1.732,5:2.236,6:2.449,7:2.646};var k=pick([2,3,5,6,7]),ap=tb[k],ans=rnd(ap*10);
+  var m=mc(String(ans),[String(rnd(ap*100)),String(ap),String(rnd(ap*5))]);
+  return {id:'2-4',section:2,q:M('\\sqrt{'+k+'} = '+ap)+' として、'+M('\\sqrt{'+(100*k)+'}')+' の値を求めなさい。',choices:m.choices,correct:m.correct,
+  steps:[(100*k)+' を「2乗の数 × '+k+'」に分解：'+M((100*k)+' = 100 × '+k)+'。',M('\\sqrt{'+(100*k)+'} = \\sqrt{100} × \\sqrt{'+k+'} = 10\\sqrt{'+k+'}')+'。',M('10 × '+ap+' = '+ans)+'！'],answer:M(String(ans))};}
+function gen25(){var r=pick([6,9,12,3,15]),cand=[];for(var t=40;t<=330;t+=10){if(t===180)continue;var ar=r*r*t/360;if(Number.isInteger(ar))cand.push([t,ar]);}var c=pick(cand),theta=c[0],area=c[1];
+  var m=mc(area+'π cm^{2}',[(r*r)+'π cm^{2}',(2*area)+'π cm^{2}',(area+r)+'π cm^{2}']);
+  return {id:'2-5',section:2,q:'右の図のような、半径 '+r+' cm、中心角 '+theta+'° のおうぎ形の面積を求めなさい。（円周率は '+M('π')+'）',choices:m.choices,correct:m.correct,
+  steps:['公式：おうぎ形の面積 = '+M('π × 半径^{2} × \\frac{中心角}{360}')+'。',M('π × '+r+'^{2} × \\frac{'+theta+'}{360} = '+(r*r)+'π × \\frac{'+theta+'}{360}')+'。',M((r*r)+' × '+theta+' ÷ 360 = '+area)+'。答えは '+M(area+'π')+' cm<sup>2</sup>！'],answer:M(area+'π')+' cm<sup>2</sup>',
+  figure:'sector',fp:{r:r,theta:theta},diagram:'sector'};}
+function gen26(){var a=rand(10,40),b=rand(10,40);while(((a+b)%2!==0)||(a+b)===60||(a+b)===90||(a+b)>=160){a=rand(10,40);b=rand(10,40);}var s=a+b,x=(180-s)/2;
+  var m=mc(x+'°',[s+'°',(180-s)+'°',(x+s)+'°']);
+  return {id:'2-6',section:2,q:'右の図で、'+M('AB = AC')+' の二等辺三角形があり、B は直線 '+M('ℓ')+' 上、C は直線 '+M('m')+' 上、'+M('ℓ ∥ m')+' である。'+M('∠x')+' の大きさを求めなさい。',choices:m.choices,correct:m.correct,
+  steps:['平行線の角度問題 → 点 A を通る平行な補助線を引くのが定石！','錯角より '+M('∠BAC = '+a+'° + '+b+'° = '+s+'°')+'。','二等辺三角形の底角は等しい：'+M('∠x = (180° − '+s+'°) ÷ 2 = '+x+'°')+'！'],answer:M('∠x = '+x+'°'),
+  figure:'angle',fp:{a:a,b:b},diagram:'angle'};}
+function gen27(){var m=mc('\\frac{5}{6}',['\\frac{1}{6}','\\frac{2}{3}','\\frac{1}{2}']);
+  return {id:'2-7',section:2,q:'右の図のように、袋の中に赤球2個・白球2個が入っている。同時に2個取り出すとき、少なくとも1個は赤球が出る確率を求めなさい。',choices:m.choices,correct:m.correct,
+  steps:['「少なくとも1個」→ 余事象（反対）を考えるのが定石！反対 = 2個とも白。','取り出し方は全部で 6 通り。白2個は 1 通り → '+M('\\frac{1}{6}')+'。',M('1 − \\frac{1}{6} = \\frac{5}{6}')+'！下の表で確かめよう。'],answer:M('\\frac{5}{6}'),
+  figure:'bag',diagram:'prob'};}
+function gen28(){var m=mc('∠ABC の二等分線',['辺 AC の垂直二等分線','対角線 BD','B から AD への垂線']);
+  return {id:'2-8',section:2,q:'右の図の四角形 ABCD を、辺 AB が辺 BC に重なるように折る。折り目の線と辺 AD の交点 P を作図するには、どの線を引けばよいか。',choices:m.choices,correct:m.correct,
+  steps:['AB が BC にぴったり重なる折り方 → 折り目は '+M('∠ABC')+' を半分にする線！','つまり '+M('∠ABC')+' の角の二等分線を作図する。','二等分線と辺 AD の交点に P と書き入れる。作図の線は消さないこと！'],answer:M('∠ABC')+' の二等分線と辺 AD の交点が P',
+  figure:'quad',diagram:'cons'};}
+function build(){return [gen11(),gen12(),gen13(),gen14(),gen15(),gen16(),gen21(),gen22(),gen23(),gen24(),gen25(),gen26(),gen27(),gen28()];}
+
+/* ===== 状態 & 描画 ===== */
+var problems=build(),done={},total=0,cst={};
+function stOf(id){if(!cst[id])cst[id]={open:false,sel:null,step:-1};return cst[id];}
+var LB=['A','B','C','D'];
+
+function cardHTML(p){
+  var st=stOf(p.id),isDone=!!done[p.id];
+  var h='<div class="card'+(isDone?' done':'')+'" data-card="'+p.id+'">';
+  h+='<button class="chead" data-act="toggle" data-id="'+p.id+'"><span class="num">'+(isDone?'✓':p.id)+'</span><span class="q">'+p.q+'</span><span class="caret">'+(st.open?'▲':'▼')+'</span></button>';
+  if(st.open){
+    h+='<div class="cbody">';
+    if(p.figure)h+=figureHTML(p);
+    var answered=st.sel!==null;
+    h+='<p class="lead">🤔 まずは自分で選んでみよう！</p><div class="choices">';
+    for(var i=0;i<p.choices.length;i++){
+      var cls='choice';
+      if(answered){if(i===p.correct)cls+=' ok';else if(i===st.sel)cls+=' ng';else cls+=' dim';}
+      var mk='';
+      if(answered&&i===p.correct)mk='<span class="mark g">✓</span>';
+      else if(answered&&i===st.sel&&i!==p.correct)mk='<span class="mark r">✗</span>';
+      h+='<button class="'+cls+'" '+(answered?'disabled':'')+' data-act="choice" data-id="'+p.id+'" data-i="'+i+'"><span class="lb">'+LB[i]+'</span>'+M(p.choices[i])+mk+'</button>';
+    }
+    h+='</div>';
+    if(answered){
+      var ok=st.sel===p.correct;
+      h+='<p class="verdict '+(ok?'g':'r')+'">'+(ok?'🎉 正解！ステップ解説で解き方も確認しよう。':'残念…！ステップ解説でしっかり理解しよう。')+'</p>';
+      h+='<div class="steps"><p class="t">💡 ステップ解説</p>';
+      for(var k=0;k<=st.step;k++){h+='<div class="step"><span class="n">'+(k+1)+'</span><span>'+p.steps[k]+'</span></div>';}
+      var allSteps=st.step>=p.steps.length-1;
+      if(!allSteps){h+='<button class="btn" data-act="step" data-id="'+p.id+'">'+(st.step===-1?'ステップ 1 を見る':'次のステップ（'+(st.step+2)+'/'+p.steps.length+'）')+'</button>';}
+      else{h+='<div class="ansbox"><span class="mark g">🎯</span><b>答え：'+p.answer+'</b></div>';}
+      h+='</div>';
+      if(allSteps&&p.diagram)h+='<div class="dia" data-type="'+p.diagram+'"'+(p.fp?(' data-r="'+(p.fp.r||'')+'" data-target="'+(p.fp.theta||'')+'" data-a="'+(p.fp.a||'')+'" data-b="'+(p.fp.b||'')+'"'):'')+'></div>';
+      if(allSteps&&!isDone)h+='<button class="donebtn" data-act="done" data-id="'+p.id+'">🏆 理解できた！</button>';
+    }
+    h+='</div>';
+  }
+  h+='</div>';
+  return h;
+}
+function renderAll(){
+  var s1='',s2='';
+  problems.forEach(function(p){if(p.section===1)s1+=cardHTML(p);else s2+=cardHTML(p);});
+  document.getElementById('s1').innerHTML=s1;
+  document.getElementById('s2').innerHTML=s2;
+  problems.forEach(function(p){var el=document.querySelector('[data-card="'+p.id+'"]');if(el)initDia(el);});
+  refreshHeader();
+  typeset(document.getElementById('panel-s1'));typeset(document.getElementById('panel-s2'));
+}
+function remount(p){
+  var el=document.querySelector('[data-card="'+p.id+'"]');
+  if(!el)return;
+  var tmp=document.createElement('div');tmp.innerHTML=cardHTML(p);
+  el.replaceWith(tmp.firstChild);
+  var ne=document.querySelector('[data-card="'+p.id+'"]');
+  initDia(ne);typeset(ne);
+}
+function refreshHeader(){
+  var n=0;for(var k in done)if(done[k])n++;
+  var pct=Math.round(n/problems.length*100);
+  document.getElementById('pinfo').textContent=n+' / '+problems.length+' 問（'+pct+'%）　累計 '+total+' 問';
+  document.getElementById('pbar').style.width=pct+'%';
+  document.getElementById('clear').innerHTML = pct===100 ? '<div class="clear"><p style="font-size:2.4rem;margin:0">🏆</p><p style="font-weight:800;color:var(--green-d);margin:6px 0">このセット全問クリア！おつかれさま！</p><p style="font-size:.85rem;color:var(--muted);margin:0">「数字を変えて新しい問題に挑戦」でもう一度！</p></div>' : '';
+}
+
+/* ===== インタラクティブ ===== */
+function initDia(el){
+  if(!el)return;var d=el.querySelector('.dia');if(!d)return;
+  var t=d.dataset.type;
+  if(t==='sector')initSector(d);else if(t==='angle')initAngle(d);else if(t==='prob')initProb(d);else if(t==='cons')initCons(d);
+}
+function initSector(d){
+  var r=+d.dataset.r,target=+d.dataset.target,angle=target;
+  d.innerHTML='<p class="wtitle">🎛️ スライダーで中心角を変えてみよう</p><div class="srow"><div class="ssvg"></div><div class="sctrl"><input type="range" min="10" max="350" value="'+target+'" class="slider"><div class="sinfo"></div><button class="setbtn">'+target+'° にセット</button></div></div>';
+  var box=d.querySelector('.ssvg'),info=d.querySelector('.sinfo'),sl=d.querySelector('.slider'),bt=d.querySelector('.setbtn');
+  function upd(){box.innerHTML=sectorSVG(r,angle,true,target);var af=r*r*angle/360,ar=Math.round(af*100)/100,disp=Number.isInteger(af)?af:ar;
+    var html='面積 = '+M('π × '+r+'^{2} × \\frac{'+angle+'}{360}')+'<br>= '+M((r*r)+'π × \\frac{'+angle+'}{360}')+' = <b>'+M(disp+'π')+' cm<sup>2</sup></b>';
+    if(angle===target)html+=' <span class="hit">← 問題の '+target+'°！答えは '+M((r*r*target/360)+'π')+' cm<sup>2</sup></span>';
+    info.innerHTML=html;typeset(info);}
+  sl.addEventListener('input',function(){angle=+sl.value;upd();});
+  bt.addEventListener('click',function(){angle=target;sl.value=target;upd();});
+  upd();
+}
+function initAngle(d){
+  var a=+d.dataset.a,b=+d.dataset.b,sum=a+b,x=(180-sum)/2,stage=0;
+  var stages=['まずは図をよく見よう。'+M('ℓ ∥ m')+'、'+M('AB = AC')+' の二等辺三角形。','① 点 A を通り ℓ・m に平行な補助線(緑)を引く！','② 錯角より、'+M('∠BAC = '+a+'° + '+b+'° = '+sum+'°')+' とわかる。','③ 二等辺三角形の底角は等しいので '+M('∠x = (180° − '+sum+'°) ÷ 2 = '+x+'°')+'！'];
+  d.innerHTML='<p class="wtitle">🎬 ボタンを押して解き方を再現（ステップ <span class="sn">1</span>/4）</p><div class="asvg" style="text-align:center"></div><div class="atext"></div><div class="nav"><button class="prev">◀ 戻る</button><button class="next">次へ ▶</button></div>';
+  var svg=d.querySelector('.asvg'),tx=d.querySelector('.atext'),sn=d.querySelector('.sn'),pv=d.querySelector('.prev'),nx=d.querySelector('.next');
+  function upd(){svg.innerHTML=angleSVG(a,b,stage);tx.innerHTML=stages[stage];typeset(tx);sn.textContent=stage+1;pv.disabled=stage===0;nx.disabled=stage===3;}
+  pv.addEventListener('click',function(){if(stage>0){stage--;upd();}});
+  nx.addEventListener('click',function(){if(stage<3){stage++;upd();}});
+  upd();
+}
+function initCons(d){
+  var step=0;
+  var steps=['四角形 ABCD。辺 AB を辺 BC に重ねるように折る → 折り目は∠ABC の二等分線！','① B を中心に円弧をかき、BA・BC との交点(●)をとる。','② その 2 点から同じ半径で弧をかき、交わる点(★)をつくる。','③ B と★を通る直線を引く。これが二等分線＝折り目！','④ 二等分線と辺 AD の交点が P！'];
+  d.innerHTML='<p class="wtitle">📐 コンパスの手順を１つずつ（ステップ <span class="sn">1</span>/5）</p><div class="asvg" style="text-align:center"></div><div class="atext"></div><div class="nav"><button class="prev">◀ 戻る</button><button class="next">次へ ▶</button></div>';
+  var svg=d.querySelector('.asvg'),tx=d.querySelector('.atext'),sn=d.querySelector('.sn'),pv=d.querySelector('.prev'),nx=d.querySelector('.next');
+  function upd(){svg.innerHTML=quadSVG(step);tx.textContent=steps[step];sn.textContent=step+1;pv.disabled=step===0;nx.disabled=step===4;}
+  pv.addEventListener('click',function(){if(step>0){step--;upd();}});
+  nx.addEventListener('click',function(){if(step<4){step++;upd();}});
+  upd();
+}
+function initProb(d){
+  var pairs=[{a:'赤①',b:'赤②',red:true},{a:'赤①',b:'白①',red:true},{a:'赤①',b:'白②',red:true},{a:'赤②',b:'白①',red:true},{a:'赤②',b:'白②',red:true},{a:'白①',b:'白②',red:false}];
+  var sel={},checked=false;
+  function ball(l){return '<span class="ball '+(l.charAt(0)==='赤'?'red':'white')+'">'+l+'</span>';}
+  function render(){
+    var h='<p class="wtitle">👆 「赤球を少なくとも1個ふくむ」組み合わせを全部タップしてから答え合わせ!</p><div class="pgrid">';
+    pairs.forEach(function(p,i){var cls='pcell';if(checked){cls+=p.red?' pg':' pr';}else if(sel[i])cls+=' sel';h+='<button class="'+cls+'" data-p="'+i+'">'+ball(p.a)+ball(p.b)+(checked&&p.red?' ✓':'')+'</button>';});
+    h+='</div>';
+    if(!checked){h+='<button class="btn" style="margin-top:12px" data-check="1">答え合わせする</button>';}
+    else{var ok=pairs.every(function(p,i){return !!sel[i]===p.red;});
+      h+='<div class="presult '+(ok?'g':'y')+'"><b>'+(ok?'🎉 正解！':'おしい！緑色が赤球をふくむ組み合わせだよ。')+'</b><br>全 6 通りのうち赤をふくむのは <b>5 通り</b> →確率は <b>'+M('\\frac{5}{6}')+'</b>。<br>「2個とも白」は 1 通りだけなので '+M('1 − \\frac{1}{6} = \\frac{5}{6}')+' と<b>余事象</b>で計算するのが速い！<br><button class="again" data-reset="1">↺ もう一度</button></div>';}
+    d.innerHTML=h;wire();typeset(d);
+  }
+  function wire(){
+    d.querySelectorAll('[data-p]').forEach(function(bt){bt.addEventListener('click',function(){if(checked)return;var i=+bt.dataset.p;sel[i]=!sel[i];render();});});
+    var cb=d.querySelector('[data-check]');if(cb)cb.addEventListener('click',function(){checked=true;render();});
+    var rs=d.querySelector('[data-reset]');if(rs)rs.addEventListener('click',function(){checked=false;sel={};render();});
+  }
+  render();
+}
+
+/* ===== イベント ===== */
+document.body.addEventListener('click',function(e){
+  var t=e.target.closest('[data-act]');if(!t)return;
+  var act=t.dataset.act,id=t.dataset.id,p=null;
+  for(var i=0;i<problems.length;i++)if(problems[i].id===id){p=problems[i];break;}
+  if(act==='toggle'){stOf(id).open=!stOf(id).open;remount(p);}
+  else if(act==='choice'){var st=stOf(id);if(st.sel!==null)return;st.sel=+t.dataset.i;remount(p);}
+  else if(act==='step'){stOf(id).step++;remount(p);}
+  else if(act==='done'){if(!done[id]){done[id]=true;total++;}remount(p);refreshHeader();}
+});
+document.getElementById('reroll').addEventListener('click',function(){
+  problems=build();done={};cst={};renderAll();window.scrollTo({top:0,behavior:'smooth'});
+});
+/* タブ切替 */
+document.querySelectorAll('.tab').forEach(function(tb){
+  tb.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active');});
+    document.querySelectorAll('.panel').forEach(function(x){x.classList.remove('active');});
+    tb.classList.add('active');
+    document.getElementById('panel-'+tb.dataset.tab).classList.add('active');
+  });
+});
+renderAll();
+if(window.MathJax&&MathJax.startup&&MathJax.startup.promise){MathJax.startup.promise.then(function(){typeset();});}
+</script>
+</body>
+</html>
